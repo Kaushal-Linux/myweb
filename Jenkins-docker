@@ -41,12 +41,12 @@ pipeline {
         }
         stage("DockerFile Build") {
             steps {
-                sh """"
+                sh """
                 docker build -t tomcat .
                 docker tag tomcat kaushal117/dockertest:tomcat
                 docker login -u kaushal117 -p Mykaushi117@
                 docker push kaushal117/dockertest:tomcat
-                """"
+                """
             }
         }
         stage("deploy-dev") {
