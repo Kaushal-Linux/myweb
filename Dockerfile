@@ -15,7 +15,7 @@ RUN yum repolist;yum -y install java-1.8.0-openjdk
 RUN java -version
 
 WORKDIR /opt/tomcat/webapps
-RUN curl -O -L http://3.109.181.164:8081/repository/sample-release/in/javahome/myweb/8.2.0/myweb-8.2.0.war
+RUN curl -O -L http://52.66.181.114:8081/repository/sample-release/in/javahome/myweb/8.2.0/myweb-8.2.0.war
 
 EXPOSE 8080
 
