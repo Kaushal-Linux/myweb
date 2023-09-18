@@ -51,7 +51,7 @@ pipeline {
         }
         stage("deploy-dev") {
             steps {
-                sshagent(['tomcat_new']) {
+                sshagent(['docker']) {
                     sh '''
                     ssh ec2-user@172.31.11.28 "docker pull kaushal117/dockertest:tomcat"
                     ssh ec2-user@172.31.11.28 "docker run -d -p 2000:8080 kaushal117/dockertest:tomcat"
