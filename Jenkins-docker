@@ -1,0 +1,65 @@
+pipeline{
+    agent any
+     tools {
+        maven 'Maven-3.6.1'
+    }
+    
+    environment{
+        PATH = "/opt/maven3/bin:$PATH"
+    }
+    stages{
+        stage("Git Checkout"){
+            steps{
+                git 'https://github.com/Kaushal-Linux/myweb.git'
+            }
+        }
+        stage("Maven Build"){
+            steps{
+                sh "mvn clean sonar:sonar package"
+                
+            }
+        }
+        stage('Upload War To Nexus'){
+            steps{
+                  nexusArtifactUploader artifacts: [
+                       [
+                            artifactId: 'myweb', 
+                            classifier: '', 
+                            file: "target/myweb-8.2.0.war", 
+                            type: 'war'
+                       ]
+                  ], 
+                  credentialsId: 'nexus3', 
+                  groupId: 'in.javahome', 
+                  nexusUrl: '52.66.181.114:8081', 
+                  nexusVersion: 'nexus3', 
+                  protocol: 'http', 
+                  repository: 'sample-release', 
+                  version: '8.2.0'  
+              }
+            }
+        stage("DockerFile Build"){
+            steps{
+                sh """
+                docker build -t tomcat .
+                docker tag tomcat kaushal117/dockertest:tomcat
+                docker push kaushal117/dockertest:myimagetom
+
+                """
+            }
+        }
+        stage("deploy-dev"){
+            steps{
+                sshagent(['tomcat']) {
+                sh ""
+                    ssh ec2-user@172.31.11.28  docker pull kaushal117/dockertest:tomcat
+
+                    ssh ec2-user@172.31.11.28  docker run -d -p 2000:8080 kaushal117/dockertest:tomcat
+                    
+                ""
+              }
+            
+            }
+        }
+    }
+}
