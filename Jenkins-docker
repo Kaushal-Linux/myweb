@@ -44,7 +44,7 @@ pipeline {
                 sh """
                 docker build -t tomcat .
                 docker tag tomcat kaushal117/dockertest:tomcat
-                docker push kaushal117/dockertest:myimagetom
+                docker push kaushal117/dockertest:tomcat
                 """
             }
         }
