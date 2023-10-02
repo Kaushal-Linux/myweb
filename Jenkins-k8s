@@ -1,0 +1,64 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3.6.1'
+    }
+
+    environment {
+        PATH = "/opt/maven3/bin:$PATH"
+    }
+
+    stages {
+        stage("Git Checkout") {
+            steps {
+                git 'https://github.com/Kaushal-Linux/myweb.git'
+            }
+        }
+        stage("Maven Build") {
+            steps {
+                sh "mvn clean sonar:sonar package"
+            }
+        }
+        stage('Upload War To Nexus') {
+            steps {
+                nexusArtifactUploader artifacts: [
+                    [
+                        artifactId: 'myweb',
+                        classifier: '',
+                        file: "target/myweb-8.2.0.war",
+                        type: 'war'
+                    ]
+                ],
+                credentialsId: 'nexus3',
+                groupId: 'in.javahome',
+                nexusUrl: '13.233.56.231:8081',
+                nexusVersion: 'nexus3',
+                protocol: 'http',
+                repository: 'sample-release',
+                version: '8.2.0'
+            }
+        }
+        stage("DockerFile Build") {
+            steps {
+                sh """
+                docker build -t tomcat .
+                docker tag tomcat kaushal117/dockertest:tomcat
+                docker login -u kaushal117 -p Mykaushi117@
+                docker push kaushal117/dockertest:tomcat
+                """
+            }
+        }
+        stage("deploy-dev") {
+            steps {
+                sshagent(['docker']) {
+                    sh '''
+                    scp -o StrictHostKeyChecking=no tomcat.yaml ec2-user@172.31.8.169:/home/ec2-user/
+                    ssh ec2-user@172.31.8.169 -o StrictHostKeyChecking=no "kubectl apply -f /home/ec2-user/tomcat.yaml"
+                    ssh ec2-user@172.31.8.169 -o StrictHostKeyChecking=no "kubectl expose pod tomcat-container --type=NodePort --port=80"
+                    '''
+                }
+            }
+        }
+    }
+}
