@@ -54,8 +54,8 @@ pipeline {
                 sshagent(['kubernetes']) {
                     sh '''
                     scp -o StrictHostKeyChecking=no tomcat.yaml ec2-user@172.31.8.169:/home/ec2-user/
-                    ssh ec2-user@172.31.8.169 -o StrictHostKeyChecking=no "KUBECONFIG=/root/.kube/config kubectl apply -f /home/ec2-user/tomcat.yaml"
-                    ssh ec2-user@172.31.8.169 -o StrictHostKeyChecking=no "KUBECONFIG=/root/.kube/config kubectl expose pod tomcat-container --type=NodePort --port=8080"
+                    ssh ec2-user@172.31.8.169 -o StrictHostKeyChecking=no "kubectl apply -f /home/ec2-user/tomcat.yaml"
+                    ssh ec2-user@172.31.8.169 -o StrictHostKeyChecking=no "kubectl expose pod tomcat-container --type=NodePort --port=8080"
                     '''
                 }
             }
