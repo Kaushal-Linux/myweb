@@ -25,7 +25,7 @@ RUN sed -i 's/<Valve className="org.apache.catalina.valves.RemoteAddrValve"/<!--
 RUN sed -i 's/<Valve className="org.apache.catalina.valves.RemoteAddrValve"/<!--&/;s/allow="127\\\.\\d+\\.\\d+\\.\\d+|::1|0:0:0:0:0:0:0:1" \/>/-->/' /opt/tomcat/webapps/manager/META-INF/context.xml
 
 WORKDIR /opt/tomcat/webapps
-RUN curl -O -L http://13.232.39.181:8081/repository/sample-release/in/javahome/myweb/8.2.0/myweb-8.2.0.war
+RUN curl -O -L http://13.233.56.231:8081/repository/sample-release/in/javahome/myweb/8.2.0/myweb-8.2.0.war
 
 EXPOSE 8080
 
