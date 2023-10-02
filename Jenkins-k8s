@@ -51,7 +51,7 @@ pipeline {
         }
         stage("deploy-dev") {
             steps {
-                sshagent(['docker']) {
+                sshagent(['kubernetes']) {
                     sh '''
                     scp -o StrictHostKeyChecking=no tomcat.yaml ec2-user@172.31.8.169:/home/ec2-user/
                     ssh ec2-user@172.31.8.169 -o StrictHostKeyChecking=no "kubectl apply -f /home/ec2-user/tomcat.yaml"
