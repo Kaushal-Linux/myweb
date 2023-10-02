@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat-container
+spec:
+  containers:
+  - name: tomcat-container
+    image: kaushal117/dockertest:tomcat
+    ports:
+    - containerPort: 80
