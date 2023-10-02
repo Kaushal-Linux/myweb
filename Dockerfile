@@ -13,6 +13,7 @@ RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
 RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 RUN yum repolist;yum -y install java-1.8.0-openjdk
 RUN java -version
+RUN sed -i '/<\/tomcat-users>/d' /opt/tomcat/conf/tomcat-users.xml
 RUN echo '-->' >> /opt/tomcat/conf/tomcat-users.xml
 RUN echo '  <role rolename="manager-gui"/>' >> /opt/tomcat/conf/tomcat-users.xml
 RUN echo '  <role rolename="manager-script"/>' >> /opt/tomcat/conf/tomcat-users.xml
@@ -21,6 +22,7 @@ RUN echo '  <role rolename="manager-status"/>' >> /opt/tomcat/conf/tomcat-users.
 RUN echo '  <user username="admin" password="admin" roles="manager-gui, manager-script, manager-jmx, manager-status"/>' >> /opt/tomcat/conf/tomcat-users.xml
 RUN echo '  <user username="deployer" password="deployer" roles="manager-script"/>' >> /opt/tomcat/conf/tomcat-users.xml
 RUN echo '  <user username="tomcat" password="s3cret" roles="manager-gui"/>' >> /opt/tomcat/conf/tomcat-users.xml
+RUN echo "</tomcat-users>" >> /opt/tomcat/conf/tomcat-users.xml
 RUN sed -i 's/<Valve className="org.apache.catalina.valves.RemoteAddrValve"/<!--&/;s/allow="127\\\.\\d+\\.\\d+\\.\\d+|::1|0:0:0:0:0:0:0:1" \/>/-->/' /opt/tomcat/webapps/host-manager/META-INF/context.xml
 RUN sed -i 's/<Valve className="org.apache.catalina.valves.RemoteAddrValve"/<!--&/;s/allow="127\\\.\\d+\\.\\d+\\.\\d+|::1|0:0:0:0:0:0:0:1" \/>/-->/' /opt/tomcat/webapps/manager/META-INF/context.xml
 
